@@ -1,5 +1,4 @@
 import React from "react";
-
 import { client } from "../lib/client";
 import { Product, FooterBanner, HeroBanner } from "../components";
 
@@ -20,6 +19,9 @@ const Home = ({ products, bannerData }) => (
     <FooterBanner footerBanner={bannerData && bannerData[0]} />
   </div>
 );
+
+// fetching data from next.js
+// then we need to pass in these props data into the Home function as an argument
 
 export const getServerSideProps = async () => {
   const query = '*[_type == "product"]';

@@ -1,7 +1,8 @@
 import React from "react";
 import Link from "next/link";
-
 import { urlFor } from "../lib/client";
+
+// we can destructure the product properties based on the information we had written in sanity product
 
 const Product = ({ product: { image, name, slug, price } }) => {
   return (

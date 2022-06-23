@@ -11,6 +11,8 @@ export const client = sanityClient({
   token: process.env.NEXT_PUBLIC_SANITY_TOKEN,
 });
 
+// builds the url from sanity client
 const builder = imageUrlBuilder(client);
 
+// exporting the image url and setting it as a variable
 export const urlFor = (source) => builder.image(source);
