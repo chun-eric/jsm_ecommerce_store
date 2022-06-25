@@ -49,6 +49,20 @@ export const StateContext = ({ children }) => {
     toast.success(`${qty} ${product.name} added to the cart`);
   };
 
+  // removing any item / product in our cart
+  const onRemove = (product) => {
+    foundProduct = cartItems.find((item) => item._id === product._id);
+    const newCartItems = cartItems.filter((item) => item._id !== product._id);
+    settotalPrice(
+      (prevTotalPrice) =>
+        prevTotalPrice - foundProduct.price * foundProduct.quantity
+    );
+    settotalQuantities(
+      (prevTotalQuantities) => prevTotalQuantities - foundProduct.quantity
+    );
+    setcartItems(newCartItems);
+  };
+
   // making a new function that will toggle items amount and price inside the cart
   const toggleCartItemQuantity = (id, value) => {
     // first we need to find the product we are working with. We need to create a new foundProduct variable and index. Lets set it at the top where all the states are set.
@@ -59,10 +73,16 @@ export const StateContext = ({ children }) => {
     index = cartItems.findIndex((product) => product._id === id);
     // Next are we incrementing or decrementing this product?
     // Remember to never mutate the oringal array. We need to make a copy of it.
+    //Whenever we try to reduce or add an extra qty inside the cart the product duplicates itself.
+    // How do we fix this bug?
+    // We need to create a new array that doesn’t mutate the original cartItems array.
+    // We can use a filter method to get any item that doesn’t include the item id that matches the id already in the cart which is represented as id
+
+    const newCartItems = cartItems.filter((item) => item._id !== id);
 
     if (value === "inc") {
       setcartItems([
-        ...cartItems,
+        ...newCartItems,
         { ...foundProduct, quantity: foundProduct.quantity + 1 },
       ]);
       settotalPrice((prevTotalPrice) => prevTotalPrice + foundProduct.price);
@@ -70,7 +90,7 @@ export const StateContext = ({ children }) => {
     } else if (value === "dec") {
       if (foundProduct.quantity > 1) {
         setcartItems([
-          ...cartItems,
+          ...newCartItems,
           { ...foundProduct, quantity: foundProduct.quantity - 1 },
         ]);
         settotalPrice((prevTotalPrice) => prevTotalPrice - foundProduct.price);
@@ -97,8 +117,11 @@ export const StateContext = ({ children }) => {
       value={{
         showCart,
         cartItems,
+        setcartItems,
         totalPrice,
+        settotalPrice,
         totalQuantities,
+        settotalQuantities,
         qty,
         incQty,
         decQty,
@@ -106,6 +129,7 @@ export const StateContext = ({ children }) => {
         showCart,
         setshowCart,
         toggleCartItemQuantity,
+        onRemove,
       }}
     >
       {children}
